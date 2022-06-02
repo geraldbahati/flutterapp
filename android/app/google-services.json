@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "464534452131",
+    "project_id": "gerald-baha-first-flutter-app",
+    "storage_bucket": "gerald-baha-first-flutter-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:464534452131:android:1d68e715c37d08269b8c16",
+        "android_client_info": {
+          "package_name": "com.artlife.firstapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "464534452131-v3ep10ksava7p9b8dv1d5tvbbiccot4q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6sN33N41n4tpywWYzGPPDEkFQmx-4p2s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "464534452131-v3ep10ksava7p9b8dv1d5tvbbiccot4q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "464534452131-1voapkm121e8ttlp0rb0e78uvb3j6dl4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.artlife.firstapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
