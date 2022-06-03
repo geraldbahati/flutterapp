@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firstapp/biews/login_view.dart';
-import 'package:firstapp/biews/register_view.dart';
 import 'package:firstapp/firebase_options.dart';
+import 'package:firstapp/views/login_view.dart';
+import 'package:firstapp/views/register_view.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -21,6 +21,10 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: const HomePage(),
+      routes: {
+        '/login/': (context) => const LoginView(),
+        '/register/': (context) => const RegisterView(),
+      },
     );
   }
 }
@@ -30,30 +34,28 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
+    return FutureBuilder(
+      future: Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
       ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser;
-              if (user?.emailVerified ?? false) {
-                print('You are a verified email');
-              } else {
-                print('You need to verify your email first');
-              }
-              return const Text('Done');
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.done:
+            // final user = FirebaseAuth.instance.currentUser;
+            // print(user);
+            // if (user?.emailVerified ?? false) {
+            //   print('You are a verified email');
+            //   return const Text('Done');
+            // } else {
+            //   print('You need to verify your email first');
+            //   return const VerifyEmailView();
+            // }
+            return const LoginView();
 
-            default:
-              return const Text('Loading...');
-          }
-        },
-      ),
+          default:
+            return const CircularProgressIndicator();
+        }
+      },
     );
   }
 }
