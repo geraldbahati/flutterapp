@@ -8,8 +8,6 @@ import 'package:firstapp/views/verify_email_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
-import 'package:provider/provider.dart';
-
 void main() {
   runApp(const MyApp());
 }
@@ -27,6 +25,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       routes: {
+        '/notes/': (context) => const NotesView(),
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
       },
@@ -96,6 +95,7 @@ class _NotesViewState extends State<NotesView> {
               switch (value) {
                 case MenuAction.logout:
                   final shouldLogout = await showLogOutDialog(context);
+                  devtools.log(shouldLogout.toString());
                   if (shouldLogout) {
                     FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
