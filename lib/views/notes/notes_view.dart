@@ -8,11 +8,10 @@ class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _NotesViewState createState() => _NotesViewState();
+  NotesViewState createState() => NotesViewState();
 }
 
-class _NotesViewState extends State<NotesView> {
+class NotesViewState extends State<NotesView> {
   late final NotesService _notesService;
   String get userEmail => AuthService.firebase().currentUser!.email!;
 
@@ -21,12 +20,6 @@ class _NotesViewState extends State<NotesView> {
     _notesService = NotesService();
 
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
   }
 
   @override
@@ -79,7 +72,26 @@ class _NotesViewState extends State<NotesView> {
                     case ConnectionState.waiting:
 
                     case ConnectionState.active:
-                      return const Text('Waiting for all notes....');
+                      if (snapshot.hasData) {
+                        final allNotes = snapshot.data as List<DatabaseNote>;
+
+                        return ListView.builder(
+                          itemCount: allNotes.length,
+                          itemBuilder: (context, index) {
+                            final note = allNotes[index];
+                            return ListTile(
+                              title: Text(
+                                note.text,
+                                maxLines: 1,
+                                softWrap: true,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
                     default:
                       return const CircularProgressIndicator();
                   }

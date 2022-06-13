@@ -13,12 +13,17 @@ class NotesService {
 
   List<DatabaseNote> _notes = [];
 
-  final _notesStreamController =
-      StreamController<List<DatabaseNote>>.broadcast();
-
   static final NotesService _shared = NotesService._sharedInstance();
-  NotesService._sharedInstance();
+  NotesService._sharedInstance() {
+    _notesStreamController = StreamController<List<DatabaseNote>>.broadcast(
+      onListen: () {
+        _notesStreamController.sink.add(_notes);
+      },
+    );
+  }
   factory NotesService() => _shared;
+
+  late final StreamController<List<DatabaseNote>> _notesStreamController;
 
   Stream<List<DatabaseNote>> get allNotes => _notesStreamController.stream;
 
@@ -36,7 +41,9 @@ class NotesService {
 
   Future<void> _cacheNotes() async {
     final allNotes = await getAllNotes();
+
     _notes = allNotes.toList();
+
     _notesStreamController.add(_notes);
   }
 
@@ -48,10 +55,13 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     await getNote(id: note.id);
 
-    final updateCounts = await db.update(noteTable, {
-      textColumn: text,
-      isSyncedWithCloudColumn: 0,
-    });
+    final updateCounts = await db.update(
+      noteTable,
+      {
+        textColumn: text,
+        isSyncedWithCloudColumn: 0,
+      },
+    );
 
     if (updateCounts == 0) {
       throw CouldNotUpdateNote();
@@ -67,7 +77,9 @@ class NotesService {
 
   Future<Iterable<DatabaseNote>> getAllNotes() async {
     await _ensureDbIsOpen();
+
     final db = _getDatabaseOrThrow();
+
     final notes = await db.query(noteTable);
 
     return notes.map((notesRow) => DatabaseNote.fromRow(notesRow));
@@ -76,6 +88,7 @@ class NotesService {
   Future<DatabaseNote> getNote({required int id}) async {
     await _ensureDbIsOpen();
     final db = _getDatabaseOrThrow();
+
     final notes = await db.query(
       noteTable,
       limit: 1,
@@ -154,12 +167,15 @@ class NotesService {
   }
 
   Future<DatabaseUser> getUser({required String email}) async {
+    // print('wwwwwwwwwwwwwwwwwwwwwwww');
     await _ensureDbIsOpen();
+
     final db = _getDatabaseOrThrow();
+
     final results = await db.query(
       userTable,
       limit: 1,
-      where: 'email =?',
+      where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
 
@@ -199,7 +215,7 @@ class NotesService {
     final db = _getDatabaseOrThrow();
     final deletedAccount = await db.delete(
       userTable,
-      where: 'email =?',
+      where: 'email = ?',
       whereArgs: [email.toLowerCase()],
     );
 
@@ -244,13 +260,17 @@ class NotesService {
 
     try {
       final docsPath = await getApplicationDocumentsDirectory();
+
       final dbPath = join(docsPath.path, dbName);
+
       final db = await openDatabase(dbPath);
+
       _db = db;
 
       await db.execute(createUserTable);
 
       await db.execute(createNoteTable);
+
       await _cacheNotes();
     } on MissingPlatformDirectoryException {
       throw UnableToGetDocumentDirectory();
@@ -297,7 +317,7 @@ class DatabaseNote {
 
   DatabaseNote.fromRow(Map<String, Object?> map)
       : id = map[idColumn] as int,
-        userId = map[emailColumn] as int,
+        userId = map[userIdColumn] as int,
         text = map[textColumn] as String,
         isSyncedWithCloud =
             (map[isSyncedWithCloudColumn] as int) == 1 ? true : false;
@@ -321,15 +341,13 @@ const emailColumn = 'email';
 const userIdColumn = 'user_id';
 const textColumn = 'text';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
-const createUserTable = '''
-  CREATE TABLE IF NOT EXISTS "user" (
+const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
 	"id"	INTEGER NOT NULL,
 	"email"	TEXT NOT NULL UNIQUE,
 	PRIMARY KEY("id" AUTOINCREMENT)
-);
-''';
+);''';
 
-const createNoteTable = '''CREATE TABLE IF NOT EXIXTS "note" (
+const createNoteTable = '''CREATE TABLE IF NOT EXISTS "note" (
 	"id"	INTEGER NOT NULL,
 	"user_id"	INTEGER NOT NULL,
 	"text"	TEXT,
