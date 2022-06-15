@@ -1,5 +1,6 @@
-import 'package:firstapp/utilities/dialogs/generic_dialog.dart';
 import 'package:flutter/material.dart';
+
+import 'generic_dialog.dart';
 
 Future<void> showCannotShareEmptyNoteDialog(BuildContext context) {
   return showGenericDialog(

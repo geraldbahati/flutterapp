@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
-import 'package:firstapp/utilities/dialogs/generic_dialog.dart';
 import 'package:flutter/material.dart';
+
+import 'generic_dialog.dart';
 
 Future<void> showErrorDialog(
   BuildContext context,

@@ -1,11 +1,11 @@
-import 'package:firstapp/services/auth/auth_service.dart';
-import 'package:firstapp/services/cloud/cloud_note.dart';
-import 'package:firstapp/services/cloud/firebase_cloud_storage.dart';
-import 'package:firstapp/utilities/dialogs/cannot_share_empty_note_dialog.dart';
-
-import 'package:firstapp/utilities/generics/get_arguments.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../services/auth/auth_service.dart';
+import '../../services/cloud/cloud_note.dart';
+import '../../services/cloud/firebase_cloud_storage.dart';
+import '../../utilities/dialogs/cannot_share_empty_note_dialog.dart';
+import '../../utilities/generics/get_arguments.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({Key? key}) : super(key: key);
